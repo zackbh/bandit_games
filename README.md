@@ -1,2 +1,2 @@
 # bandit_games
-Demo games for bandit algorithms written in R
+Demo game for bandit algorithms. 

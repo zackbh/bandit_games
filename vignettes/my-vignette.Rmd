@@ -1,0 +1,64 @@
+---
+title: "Playing Bandit Games"
+author: "Zack Barnett-Howell"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+There are two variations on a simple game included in this package. You can choose between an easier (6 locations) and harder (8 locations) setup. Your goal is to maximize the number of points you receive over a fixed number of rounds. You set the number of rounds when you call the demo function.
+```r
+gamedemo6(rounds = 100)
+```
+
+At the start of the game you are randomly assigned a type which corresponds with a location. Moving closer to that location increases the average value of your return, just as moving away from that location decreases your average return.
+
+You have to use observed payoffs to infer which location you are best suited for. However, given the limited number of rounds you have to balance exploration with exploitation of known resources.
+
+Complicating your search is a cost to moving that you have to pay each time you select a location different than the one you are currently at.
+
+The proper way to play the game is to do so without knowing the underlying structure. However, assuming that you're interested or want to modify these values:
+
+
+|  |  |  |  |
+|:------|:-----|:---------|:-------|
+|Underlying Reward: |  $\sim$Weibull  | Shape   |   $=3$   |
+|                   |                 | Scale   |   $=30 \cdot \frac{10 - d}{10}$  |
+|Error:   | $\sim$Joint Normal        | Mean    | $= \lbrace -4,4 \rbrace$ |
+|         |                           | Variance| $= \lbrace 1,1 \rbrace$  |
+
+Distance is defined circularly from your optimal point. In the 8 location case, the distance from Location 1 to Location 8 *and* Location 2 is $d=1$. The distance from Location One to Location 7 *and* Location 3 is $d=2$. And so on.
+
+|  |  |  |  |
+|:------|:-----|:---------|:-------|
+|Distance: | Circularly defined       | $d \in \lbrace 0,1,2,3,4 \rbrace$ |
+| Moving Cost:         | When you choose a new location | $=\begin{cases} 15 \\ 0 \end{cases}$ | ||
+
+The payoff each round is the value of the underlying reward distribution, which is a function of distance, and the error distribution, which is not a function of distance. The total payoff to each round is then the underlying reward + error - moving cost.
+
+```{r, echo = FALSE, fig.show='hold', fig.cap = 'Total Reward Distribution'}
+par(mar=c(2.1,2.1,2.1,2.1))
+for (d in 1:4){
+reward_vals <- numeric()
+for (i in 1:300){
+  epsilon <- runif(1)
+  if(epsilon >= .5){
+      shock <- rnorm(1, -4, 1)
+    }else{
+      shock <- rnorm(1, 4, 1)
+    }
+  reward_vals[i] <- rweibull(1,shape = 3, scale= 30*((10-d)/10)) + shock  
+}
+plot(density(reward_vals), xlab = "", main = paste("Distance =",d), ylab = "")
+}
+```
+
+|  |  |  |  |
+|:------|:-----|:---------|:-------|
+| Total Reward:       | Underlying Reward + Error |||
+| Total Payoff:       | Total Reward - Moving Cost |||
+

@@ -1,0 +1,20 @@
+Package: banditgame
+Title: Bandit Game Demo
+Version: 0.0.0.1000
+Authors@R: person("Zack", "Barnett-Howell", email = "zbarnetthowe@wisc.edu", role = c("cph", "cre"))
+URL: http://zackbh.github.io
+BugReports: https://github.com/zackbh/bandit_games/issues
+Description: Simple game involving bandit feedback and decision-making. You can
+    choose between solving a 6 or 8 location problem. You can set the game for an
+    arbitrary number of rounds, with the default being 20.
+Depends:
+    R (>= 3.3.2)
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Imports:
+    ggplot2 (>= 2.0)
+RoxygenNote: 5.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
